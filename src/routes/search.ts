@@ -264,9 +264,10 @@ function analyzeSearchQuery(query: string) {
 router.get('/suggestions', authenticateToken, async (req, res) => {
   try {
     const userId = req.user!.id;
-    const { q = '' } = req.query;
+    const queryParam = req.query.q;
+    const q = typeof queryParam === 'string' ? queryParam : Array.isArray(queryParam) ? queryParam[0] || '' : '';
 
-    if (q.length < 2) {
+    if (!q || q.length < 2) {
       return res.json({ suggestions: [] });
     }
 

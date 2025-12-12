@@ -38,7 +38,7 @@ router.get('/login', (req, res) => {
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile'
       ],
-      state: req.query.redirect_uri || process.env.FRONTEND_ORIGIN || 'http://localhost:8081/app',
+      state: (typeof req.query.redirect_uri === 'string' ? req.query.redirect_uri : undefined) || process.env.FRONTEND_ORIGIN || 'http://localhost:8081/app',
       redirect_uri: redirectUri
     });
 
