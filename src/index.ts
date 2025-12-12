@@ -53,8 +53,10 @@ app.use(cors({
 		// Allow requests with no origin (mobile apps, Postman, etc.)
 		if (!origin) return callback(null, true);
 		
-		// Log for debugging
-		console.log('CORS request from origin:', origin);
+		// Log for debugging (only in development)
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('CORS request from origin:', origin);
+		}
 		
 		// In development, allow ALL localhost and 127.0.0.1 origins
 		if (process.env.NODE_ENV !== 'production') {

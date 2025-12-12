@@ -3,8 +3,12 @@ import { Resend } from 'resend';
 
 const router = Router();
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend client (will throw if API key is missing)
+const resendApiKey = process.env.RESEND_API_KEY;
+if (!resendApiKey) {
+  throw new Error('RESEND_API_KEY environment variable is required');
+}
+const resend = new Resend(resendApiKey);
 
 router.post('/support', async (req, res) => {
     const { email, message } = req.body;

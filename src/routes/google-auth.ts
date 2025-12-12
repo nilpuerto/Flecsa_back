@@ -124,7 +124,10 @@ router.get('/callback', async (req, res) => {
     }
 
     // Generate JWT token
-    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     const token = jwt.sign(
       { 
         userId, 
@@ -262,7 +265,10 @@ router.post('/callback', async (req, res) => {
     }
 
     // Generate JWT token
-    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     const token = jwt.sign(
       { 
         userId, 

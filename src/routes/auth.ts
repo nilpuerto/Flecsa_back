@@ -44,7 +44,10 @@ router.post('/register', async (req, res) => {
     const userId = (result as any).insertId;
 
     // Generate JWT token
-    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     const token = jwt.sign(
       { userId, email, subscriptionPlan: 'free' },
       jwtSecret,
@@ -124,7 +127,10 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
     const token = jwt.sign(
       { userId: user.id, email: user.email, subscriptionPlan: user.subscription_plan },
       jwtSecret,
@@ -206,7 +212,11 @@ router.post('/refresh', async (req, res) => {
     }
 
     // Verify refresh token
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET || 'fallback-secret') as any;
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+    const decoded = jwt.verify(refreshToken, jwtSecret) as any;
     
     if (decoded.type !== 'refresh') {
       return res.status(401).json({ error: 'Token inválido' });
