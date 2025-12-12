@@ -44,18 +44,20 @@ router.post('/register', async (req, res) => {
     const userId = (result as any).insertId;
 
     // Generate JWT token
-    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
     const token = jwt.sign(
       { userId, email, subscriptionPlan: 'free' },
       jwtSecret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string }
+      { expiresIn }
     );
 
     // Generate refresh token
+    const refreshExpiresIn: string = process.env.REFRESH_TOKEN_EXPIRES_IN || '30d';
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
       jwtSecret,
-      { expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN || '30d') as string }
+      { expiresIn: refreshExpiresIn }
     );
 
     // Store refresh token in database
@@ -124,18 +126,20 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
     const token = jwt.sign(
       { userId: user.id, email: user.email, subscriptionPlan: user.subscription_plan },
       jwtSecret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string }
+      { expiresIn }
     );
 
     // Generate refresh token
+    const refreshExpiresIn: string = process.env.REFRESH_TOKEN_EXPIRES_IN || '30d';
     const refreshToken = jwt.sign(
       { userId: user.id, type: 'refresh' },
       jwtSecret,
-      { expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN || '30d') as string }
+      { expiresIn: refreshExpiresIn }
     );
 
     // Store refresh token in database
@@ -223,11 +227,12 @@ router.post('/refresh', async (req, res) => {
     }
 
     // Generate new access token
-    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
+    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
     const newToken = jwt.sign(
       { userId: decoded.userId, email: sessions[0].email, subscriptionPlan: sessions[0].subscription_plan },
       jwtSecret,
-      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string }
+      { expiresIn }
     );
 
     res.json({
