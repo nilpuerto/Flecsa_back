@@ -125,7 +125,6 @@ router.get('/callback', async (req, res) => {
 
     // Generate JWT token
     const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
-    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
     const token = jwt.sign(
       { 
         userId, 
@@ -134,15 +133,14 @@ router.get('/callback', async (req, res) => {
         loginMethod: 'google'
       },
       jwtSecret,
-      { expiresIn }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as jwt.SignOptions
     );
 
     // Generate refresh token
-    const refreshExpiresIn: string = process.env.REFRESH_TOKEN_EXPIRES_IN || '30d';
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
       jwtSecret,
-      { expiresIn: refreshExpiresIn }
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d' } as jwt.SignOptions
     );
 
     // Store refresh token in database
@@ -265,7 +263,6 @@ router.post('/callback', async (req, res) => {
 
     // Generate JWT token
     const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
-    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
     const token = jwt.sign(
       { 
         userId, 
@@ -274,15 +271,14 @@ router.post('/callback', async (req, res) => {
         loginMethod: 'google'
       },
       jwtSecret,
-      { expiresIn }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as jwt.SignOptions
     );
 
     // Generate refresh token
-    const refreshExpiresIn: string = process.env.REFRESH_TOKEN_EXPIRES_IN || '30d';
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
       jwtSecret,
-      { expiresIn: refreshExpiresIn }
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d' } as jwt.SignOptions
     );
 
     // Store refresh token in database
