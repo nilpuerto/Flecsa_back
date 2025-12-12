@@ -22,6 +22,11 @@ function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
+// Test endpoint
+router.get('/test', (_req, res) => {
+  res.json({ message: 'Early access route is working' });
+});
+
 router.post('/request', async (req, res) => {
   try {
     const { email } = req.body;

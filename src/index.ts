@@ -70,6 +70,9 @@ app.use(cors({
 		} else if (origin?.includes('flecsa.com')) {
 			// Allow all flecsa.com subdomains
 			callback(null, true);
+		} else if (origin?.includes('vercel.app') || origin?.includes('railway.app')) {
+			// Allow Vercel and Railway preview deployments
+			callback(null, true);
 		} else {
 			console.warn('CORS blocked origin:', origin);
 			callback(new Error('Not allowed by CORS'));
