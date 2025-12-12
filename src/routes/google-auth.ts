@@ -138,8 +138,8 @@ router.get('/callback', async (req, res) => {
     // Generate refresh token
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d' }
+      jwtSecret,
+      { expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN || '30d') as string }
     );
 
     // Store refresh token in database
@@ -275,8 +275,8 @@ router.post('/callback', async (req, res) => {
     // Generate refresh token
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d' }
+      jwtSecret,
+      { expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN || '30d') as string }
     );
 
     // Store refresh token in database
