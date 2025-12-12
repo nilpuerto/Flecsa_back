@@ -124,6 +124,7 @@ router.get('/callback', async (req, res) => {
     }
 
     // Generate JWT token
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
     const token = jwt.sign(
       { 
         userId, 
@@ -131,8 +132,8 @@ router.get('/callback', async (req, res) => {
         subscriptionPlan: users.length > 0 ? users[0].subscription_plan : 'free',
         loginMethod: 'google'
       },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      jwtSecret,
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string }
     );
 
     // Generate refresh token
@@ -261,6 +262,7 @@ router.post('/callback', async (req, res) => {
     }
 
     // Generate JWT token
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
     const token = jwt.sign(
       { 
         userId, 
@@ -268,8 +270,8 @@ router.post('/callback', async (req, res) => {
         subscriptionPlan: users.length > 0 ? users[0].subscription_plan : 'free',
         loginMethod: 'google'
       },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      jwtSecret,
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string }
     );
 
     // Generate refresh token
