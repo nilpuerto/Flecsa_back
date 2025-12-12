@@ -10,6 +10,18 @@ if (!resendApiKey) {
 }
 const resend = new Resend(resendApiKey);
 
+// Sanitize HTML to prevent XSS
+function escapeHtml(text: string): string {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 router.post('/request', async (req, res) => {
   try {
     const { email } = req.body;
@@ -17,6 +29,9 @@ router.post('/request', async (req, res) => {
     if (!email || !email.includes('@')) {
       return res.status(400).json({ error: 'Valid email is required' });
     }
+
+    // Sanitize email
+    const sanitizedEmail = escapeHtml(email);
 
     if (!process.env.RESEND_API_KEY) {
       throw new Error('RESEND_API_KEY is not configured');
@@ -30,7 +45,7 @@ router.post('/request', async (req, res) => {
     // Send confirmation email to the user (not to admin)
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL,
-      to: email, // Send to the user who subscribed
+      to: email, // Send to the user who subscribed (original email for sending)
       subject: 'Welcome to Flecsa Early Access',
       html: `
         <!DOCTYPE html>

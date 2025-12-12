@@ -232,8 +232,7 @@ router.post('/refresh', async (req, res) => {
       return res.status(401).json({ error: 'Refresh token inválido o expirado' });
     }
 
-    // Generate new access token
-    const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
+    // Generate new access token (jwtSecret already declared above)
     const newToken = jwt.sign(
       { userId: decoded.userId, email: sessions[0].email, subscriptionPlan: sessions[0].subscription_plan },
       jwtSecret,

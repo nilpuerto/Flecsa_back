@@ -10,12 +10,28 @@ if (!resendApiKey) {
 }
 const resend = new Resend(resendApiKey);
 
+// Sanitize HTML to prevent XSS
+function escapeHtml(text: string): string {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 router.post('/support', async (req, res) => {
     const { email, message } = req.body;
 
     if (!email || !message || !email.includes('@')) {
         return res.status(400).json({ message: 'Email and message are required and email must be valid' });
     }
+
+    // Sanitize inputs to prevent XSS
+    const sanitizedEmail = escapeHtml(email);
+    const sanitizedMessage = escapeHtml(message).replace(/\n/g, '<br>');
 
     try {
         if (!process.env.RESEND_API_KEY) {
